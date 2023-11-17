@@ -6,7 +6,6 @@ from typing import Annotated
 from fastapi import APIRouter
 from fastapi import BackgroundTasks
 
-from src.api.dependencies import DEPENDS_BOT
 from src.api.dependencies import DEPENDS_SMTP_REPOSITORY, DEPENDS_USER_REPOSITORY
 from src.config import settings
 from src.api.exceptions import (
@@ -32,7 +31,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 )
 async def get_user(
     user_id: int,
-    _verification: Annotated[VerificationResult, DEPENDS_BOT],
+#     _verification: Annotated[VerificationResult, DEPENDS_USER_REPOSITORY],
     user_repository: Annotated[AbstractUserRepository, DEPENDS_USER_REPOSITORY],
 ) -> ViewUser:
     """
@@ -43,32 +42,7 @@ async def get_user(
     return user
 
 
-# TODO: Add registration with Telegram
-@router.post(
-    "/register-via-telegram",
-    tags=["Telegram"],
-    responses={
-        200: {"description": "Start registration via Telegram"},
-        **IncorrectCredentialsException.responses,
-        **NoCredentialsException.responses,
-    },
-)
-async def register_via_telegram(
-    user: CreateUser,
-    user_repository: Annotated[AbstractUserRepository, DEPENDS_USER_REPOSITORY],
-    _verification: Annotated[VerificationResult, DEPENDS_BOT],
-):
-    """
-    Registration via Telegram
-    """
-    existing = await user_repository.read(user.telegram_id)
-    if existing:
-        raise UserAlreadyExistsException()
-    await user_repository.create(user)
-
-
 if settings.SMTP_ENABLED:
-
     @router.post("/connect-email", tags=["Email"])
     async def connect_email(
         email: str,

@@ -1,7 +1,7 @@
 __all__ = ["TokenRepository"]
 
 from datetime import timedelta, datetime
-
+from passlib.context import CryptContext
 from authlib.jose import jwt, JoseError
 
 from src.api.dependencies import Dependencies
@@ -37,7 +37,7 @@ class TokenRepository(AbstractTokenRepository):
     def create_access_token(cls, user_id: int) -> str:
         access_token = TokenRepository._create_access_token(
             data={"sub": str(user_id)},
-            expires_delta=timedelta(days=90),
+            expires_delta=timedelta(days=1),
         )
         return access_token
 
@@ -51,3 +51,6 @@ class TokenRepository(AbstractTokenRepository):
             {"alg": cls.ALGORITHM}, payload, settings.JWT_PRIVATE_KEY
         )
         return str(encoded_jwt, "utf-8")
+
+
+class AuthRepository(AbstractAuthRepository)
