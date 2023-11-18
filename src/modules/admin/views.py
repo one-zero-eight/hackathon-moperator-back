@@ -1,9 +1,22 @@
 __all__ = ["models"]
 
 from sqladmin import ModelView
+from sqlalchemy.orm import InstrumentedAttribute
 
 from src.storages.sqlalchemy.models import User, Task, Machine, Agregate
 from src.storages.sqlalchemy.models.tasks import TaskType
+
+
+class CustomModelView(ModelView):
+    export_columns: list[str | InstrumentedAttribute] = None
+
+    def get_export_columns(self) -> list[str]:
+        """Get list of properties to export."""
+
+        return self._build_column_list(
+            include=self.export_columns,
+            defaults=self._list_prop_names,
+        )
 
 
 class UserView(ModelView, model=User):
@@ -14,8 +27,23 @@ class UserView(ModelView, model=User):
     icon = "fa-solid fa-user"
 
 
-class TaskView(ModelView, model=Task):
+class TaskView(CustomModelView, model=Task):
     icon = "fa-solid fa-circle-exclamation"
+
+    export_columns = [
+        "id",
+        "title",
+        "type",
+        "asignee",
+        "status",
+        "priority",
+        "location",
+        "starting",
+        "deadline",
+        "description",
+        "current_machine",
+        "current_agregate",
+    ]
 
     form_columns = [
         "title",
@@ -26,6 +54,7 @@ class TaskView(ModelView, model=Task):
         "location",
         "starting",
         "deadline",
+        "description",
         # "work_volume",
         # "payment_coefficient",
         # "fuel_consumption",
@@ -58,6 +87,8 @@ class TaskTypeView(ModelView, model=TaskType):
 class MachineView(ModelView, model=Machine):
     icon = "fa-solid fa-building-wheat"
 
+    list_template = "custom_list.html"
+
     form_columns = [
         "name",
         "type",
@@ -67,11 +98,13 @@ class MachineView(ModelView, model=Machine):
         "suitable_task_types",
         "suitable_agregates",
     ]
-    column_list = ["id", "name", "type", "description", "status", "current_location"]
+    column_list = ["id", "name", "type", "status", "current_location", "tasks"]
 
 
 class AgregateView(ModelView, model=Agregate):
     icon = "fa-solid fa-list-check"
+
+    list_template = "custom_list.html"
 
     form_columns = [
         "name",
@@ -83,7 +116,7 @@ class AgregateView(ModelView, model=Agregate):
         "suitable_machines",
     ]
 
-    column_list = ["id", "name", "type", "status", "current_location"]
+    column_list = ["id", "name", "type", "status", "current_location", "tasks"]
 
 
 models = [UserView, TaskView, MachineView, AgregateView, TaskTypeView]

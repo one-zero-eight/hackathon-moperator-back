@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.exceptions import ObjectNotFound
 from src.modules.tasks.abc import AbstractTaskRepository
-from src.modules.tasks.schemas import ViewTask, FlatViewTask
+from src.modules.tasks.schemas import FlatViewTask
 from src.storages.sqlalchemy import AbstractSQLAlchemyStorage
 from src.storages.sqlalchemy.models import Task
 
@@ -19,13 +19,13 @@ class TaskRepository(AbstractTaskRepository):
     def _create_session(self) -> AsyncSession:
         return self.storage.create_session()
 
-    async def get_task(self, task_id: int) -> Optional[ViewTask]:
+    async def get_task(self, task_id: int) -> Optional[FlatViewTask]:
         async with self._create_session() as session:
             q = select(Task).where(Task.id == task_id)
             task = await session.scalar(q)
             if task is None:
                 raise ObjectNotFound()
-            return ViewTask.model_validate(task)
+            return FlatViewTask.model_validate(task)
 
     async def get_user_tasks(self, user_id: int) -> Optional[list[FlatViewTask]]:
         async with self._create_session() as session:

@@ -78,11 +78,9 @@ class Task(Base, IdMixin):
     agregate_solvent_consumption: Mapped[Optional[float]] = mapped_column(nullable=True)
 
     current_machine_id: Mapped[Optional[int]] = mapped_column(ForeignKey("machines.id"), nullable=True)
-    current_machine: Mapped[Optional["Machine"]] = relationship("Machine", back_populates="current_task", lazy="joined")
+    current_machine: Mapped[Optional["Machine"]] = relationship("Machine", back_populates="tasks", lazy="joined")
     current_agregate_id: Mapped[Optional[int]] = mapped_column(ForeignKey("agregates.id"), nullable=True)
-    current_agregate: Mapped[Optional["Agregate"]] = relationship(
-        "Agregate", back_populates="current_task", lazy="joined"
-    )
+    current_agregate: Mapped[Optional["Agregate"]] = relationship("Agregate", back_populates="tasks", lazy="joined")
 
     comments: Mapped[Optional[list["TaskComment"]]] = relationship(
         "TaskComment", back_populates="task", order_by="desc(TaskComment.created_at)", lazy="selectin"
@@ -93,7 +91,7 @@ class Task(Base, IdMixin):
     )
 
     def __repr__(self):
-        return f"{self.title}"
+        return f"{self.title} ({self.status})"
 
 
 class TaskType(Base, IdMixin):

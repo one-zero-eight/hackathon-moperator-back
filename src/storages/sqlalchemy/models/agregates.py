@@ -33,14 +33,14 @@ class Agregate(Base, IdMixin):
     suitable_task_types: Mapped[Optional[list["TaskType"]]] = relationship(
         "TaskType", secondary="task_suitable_agregates", back_populates="suitable_agregates", lazy="selectin"
     )
-    current_task: Mapped[Optional["Task"]] = relationship("Task", lazy="selectin")
+    tasks: Mapped[Optional[list["Task"]]] = relationship("Task", lazy="selectin")
 
     suitable_machines: Mapped[Optional[list["Machine"]]] = relationship(
         "Machine", secondary="agregate_suitable_machines", back_populates="suitable_agregates", lazy="selectin"
     )
 
     def __repr__(self):
-        return f"Agregate({self.name}: {self.type})"
+        return f"{self.name} ({self.status})"
 
 
 class AgregateSuitableMachines(Base):

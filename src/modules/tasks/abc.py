@@ -3,12 +3,12 @@ __all__ = ["AbstractTaskRepository"]
 from abc import ABCMeta, abstractmethod
 from typing import Optional
 
-from src.modules.tasks.schemas import ViewTask, FlatViewTask
+from src.modules.tasks.schemas import FlatViewTask
 
 
 class AbstractTaskRepository(metaclass=ABCMeta):
     @abstractmethod
-    async def get_task(self, task_id: int) -> Optional[ViewTask]:
+    async def get_task(self, task_id: int) -> Optional[FlatViewTask]:
         ...
 
     @abstractmethod

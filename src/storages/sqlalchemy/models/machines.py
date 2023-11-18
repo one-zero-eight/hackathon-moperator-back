@@ -34,10 +34,11 @@ class Machine(Base, IdMixin):
         "TaskType", secondary="task_suitable_machines", lazy="selectin"
     )
 
-    current_task: Mapped[Optional["Task"]] = relationship("Task", back_populates="current_machine", lazy="selectin")
+    tasks: Mapped[Optional[list["Task"]]] = relationship("Task", lazy="selectin")
+
     suitable_agregates: Mapped[Optional[list["Agregate"]]] = relationship(
         "Agregate", secondary="agregate_suitable_machines", back_populates="suitable_machines", lazy="selectin"
     )
 
     def __repr__(self):
-        return f"{self.name}"
+        return f"{self.name} ({self.status})"
