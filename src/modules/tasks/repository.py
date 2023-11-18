@@ -34,4 +34,6 @@ class TaskRepository(AbstractTaskRepository):
 
     async def change_task_status(self, task_id: int, status: str) -> ViewTask:
         async with self._create_session() as session:
-            stmt = (update())
+            stmt = (update(Task).where(Task.id == task_id).values(status=status))
+            await session.execute(stmt)
+            await session.commit()

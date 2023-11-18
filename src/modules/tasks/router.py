@@ -5,10 +5,12 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi_mock import MockException
 
+from src.api.dependencies import DEPENDS_TASK_REPOSITORY
 from src.api.exceptions import IncorrectCredentialsException, NoCredentialsException
 from src.modules.auth.dependencies import verify_request
 from src.modules.auth.schemas import VerificationResult
-from src.modules.tasks.schemas import ViewTask
+from src.modules.tasks.abc import AbstractTaskRepository
+from src.modules.tasks.schemas import ViewTask, ChangeTaskStatus
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
@@ -23,12 +25,13 @@ router = APIRouter(prefix="/tasks", tags=["Tasks"])
 )
 async def get_my_tasks(
     verification: Annotated[VerificationResult, Depends(verify_request)],
+    task_repository: Annotated[AbstractTaskRepository, DEPENDS_TASK_REPOSITORY]
 ) -> list[ViewTask]:
     """
     Get tasks list for current user
     """
-
-    raise MockException(list[ViewTask])
+    tasks = await task_repository.get_user_tasks(verification.user_id)
+    return tasks
 
 
 @router.get(
@@ -41,12 +44,14 @@ async def get_my_tasks(
 )
 async def get_task(
     task_id: int,
+    verification: Annotated[VerificationResult, Depends(verify_request)],
+    task_repository: Annotated[AbstractTaskRepository, DEPENDS_TASK_REPOSITORY]
 ) -> ViewTask:
     """
     Get task info
     """
-
-    raise MockException(ViewTask)
+    task = await task_repository.get_task(task_id)
+    return task
 
 
 @router.post(
@@ -59,10 +64,12 @@ async def get_task(
 )
 async def change_task_status(
     task_id: int,
+    status: ChangeTaskStatus,
     verification: Annotated[VerificationResult, Depends(verify_request)],
+    task_repository: Annotated[AbstractTaskRepository, DEPENDS_TASK_REPOSITORY],
 ) -> ViewTask:
     """
     Change task status
     """
-
-    raise MockException(ViewTask)
+    task = await task_repository.change_task_status(task_id, status.status)
+    return task

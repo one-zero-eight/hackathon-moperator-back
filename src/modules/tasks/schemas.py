@@ -7,12 +7,7 @@ from enum import StrEnum
 from pydantic import BaseModel, ConfigDict
 
 from src.modules.users.schemas import ViewUser
-
-
-class TaskStatuses(StrEnum):
-    first_status = "fs"
-    second_status = "ss"
-    third_status = "ts"
+from src.storages.sqlalchemy.models.tasks import TaskStatuses
 
 
 class ViewTask(BaseModel):
@@ -145,6 +140,10 @@ class ViewTaskComment(BaseModel):
     text: Optional[str]
     created_at: datetime.datetime
     updated_at: datetime.datetime
+
+
+class ChangeTaskStatus(BaseModel):
+    status: TaskStatuses
 
 
 ViewTask.model_rebuild()
