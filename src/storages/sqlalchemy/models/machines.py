@@ -33,11 +33,8 @@ class Machine(Base, IdMixin):
     suitable_task_types: Mapped[Optional[list["TaskType"]]] = relationship(
         "TaskType", secondary="task_suitable_machines"
     )
-    current_task: Mapped[Optional["Task"]] = relationship(
-        "Task",
-        primaryjoin="and_(Task.current_machine_id==Machine.id, Task.status=='in_progress')",
-    )
 
+    current_task: Mapped[Optional["Task"]] = relationship("Task", back_populates="current_machine")
     suitable_agregates: Mapped[Optional[list["Agregate"]]] = relationship(
         "Agregate", secondary="agregate_suitable_machines", back_populates="suitable_machines"
     )

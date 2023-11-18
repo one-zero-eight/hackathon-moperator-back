@@ -19,9 +19,12 @@ __all__ = [
     "func",
     "SQLEnum",
     "String",
+    "association_proxy",
+    "AssociationProxy",
 ]
 
 from sqlalchemy import ForeignKey, UniqueConstraint
+from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import select, update, insert, delete, join, union
 from sqlalchemy import and_, or_, any_, not_

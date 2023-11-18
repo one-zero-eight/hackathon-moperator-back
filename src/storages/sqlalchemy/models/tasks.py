@@ -44,6 +44,9 @@ class Task(Base, IdMixin):
 
     type_id: Mapped[Optional[int]] = mapped_column(ForeignKey("task_types.id"), nullable=False)
     type: Mapped[Optional["TaskType"]] = relationship("TaskType")
+    suitable_machines: AssociationProxy[list["Machine"]] = association_proxy("type", "suitable_machines")
+    suitable_agregates: AssociationProxy[list["Agregate"]] = association_proxy("type", "suitable_agregates")
+
     asignee_id: Mapped[Optional[int]] = mapped_column(ForeignKey("user_data.user_id"), nullable=True)
     asignee: Mapped[Optional["User"]] = relationship()
 
@@ -75,8 +78,9 @@ class Task(Base, IdMixin):
     agregate_solvent_consumption: Mapped[Optional[float]] = mapped_column(nullable=True)
 
     current_machine_id: Mapped[Optional[int]] = mapped_column(ForeignKey("machines.id"), nullable=True)
-    current_machine: Mapped[Optional["Machine"]] = relationship("Machine", back_populates="current_task")
-
+    current_machine: Mapped[Optional["Machine"]] = relationship(
+        "Machine", back_populates="current_task", foreign_keys=[current_machine_id]
+    )
     current_agregate_id: Mapped[Optional[int]] = mapped_column(ForeignKey("agregates.id"), nullable=True)
     current_agregate: Mapped[Optional["Agregate"]] = relationship("Agregate", back_populates="current_task")
 
@@ -101,6 +105,11 @@ class TaskType(Base, IdMixin):
     suitable_agregates: Mapped[Optional[list["Agregate"]]] = relationship(
         "Agregate", secondary="task_suitable_agregates", back_populates="suitable_task_types"
     )
+
+    tasks: Mapped[Optional[list[Task]]] = relationship("Task", back_populates="type")
+
+    def __repr__(self):
+        return f"{self.title}"
 
 
 class TaskSuitableMachines(Base):

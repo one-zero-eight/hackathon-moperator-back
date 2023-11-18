@@ -41,6 +41,8 @@ class TaskView(ModelView, model=Task):
 class TaskTypeView(ModelView, model=TaskType):
     icon = "fa-solid fa-font"
 
+    column_list = ["id", "title", "description"]
+
 
 class MachineView(ModelView, model=Machine):
     icon = "fa-solid fa-building-wheat"
