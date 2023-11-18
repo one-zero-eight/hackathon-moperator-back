@@ -59,7 +59,7 @@ async def close_connection():
 
 
 # Redirect root to docs
-@app.get("/")
+@app.get("/", tags=["Root"], include_in_schema=False)
 async def redirect_to_docs():
     return RedirectResponse(url="/docs")
 
@@ -70,6 +70,6 @@ for router in routers:
 if settings.ENVIRONMENT == Environment.DEVELOPMENT:
     import logging
 
-    warnings.warn("SQLAlchemy logging is enabled!")
     logging.basicConfig()
     logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
+    warnings.warn("SQLAlchemy logging is enabled!")
