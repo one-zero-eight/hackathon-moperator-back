@@ -1,6 +1,6 @@
 __all__ = ["TaskRepository"]
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -33,4 +33,5 @@ class TaskRepository(AbstractTaskRepository):
                 return [ViewTask.model_validate(task) for task in tasks]
 
     async def change_task_status(self, task_id: int, status: str) -> ViewTask:
-        pass
+        async with self._create_session() as session:
+            stmt = (update())
