@@ -31,12 +31,12 @@ class Machine(Base, IdMixin):
     current_location: Mapped[Optional[str]] = mapped_column(nullable=True)
 
     suitable_task_types: Mapped[Optional[list["TaskType"]]] = relationship(
-        "TaskType", secondary="task_suitable_machines"
+        "TaskType", secondary="task_suitable_machines", lazy="selectin"
     )
 
-    current_task: Mapped[Optional["Task"]] = relationship("Task", back_populates="current_machine")
+    current_task: Mapped[Optional["Task"]] = relationship("Task", back_populates="current_machine", lazy="selectin")
     suitable_agregates: Mapped[Optional[list["Agregate"]]] = relationship(
-        "Agregate", secondary="agregate_suitable_machines", back_populates="suitable_machines"
+        "Agregate", secondary="agregate_suitable_machines", back_populates="suitable_machines", lazy="selectin"
     )
 
     def __repr__(self):
