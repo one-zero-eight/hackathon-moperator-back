@@ -31,7 +31,7 @@ class AgregateView(ModelView, model=Agregate):
     icon = "fa-solid fa-list-check"
 
     form_excluded_columns = ["suitable_tasks", "current_task", "suitable_machines"]
-    column_list = ["id", "name", "type", "description", "status", "current_location"]
+    column_list = ["id", "name", "type", "status", "current_location"]
 
 
 models = [UserView, TaskView, MachineView, AgregateView]
