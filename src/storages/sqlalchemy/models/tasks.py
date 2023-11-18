@@ -5,6 +5,8 @@ __all__ = [
     "TaskComment",
     "TaskStatusHistory",
     "TaskSuitableAgregates",
+    "TaskStatuses",
+    "TaskPriority",
 ]
 
 import datetime
@@ -43,12 +45,10 @@ class Task(Base, IdMixin):
     title: Mapped[Optional[str]] = mapped_column(nullable=False, default="Task title #1")
 
     type_id: Mapped[Optional[int]] = mapped_column(ForeignKey("task_types.id"), nullable=False)
-    type: Mapped[Optional["TaskType"]] = relationship("TaskType")
-    suitable_machines: AssociationProxy[list["Machine"]] = association_proxy("type", "suitable_machines")
-    suitable_agregates: AssociationProxy[list["Agregate"]] = association_proxy("type", "suitable_agregates")
+    type: Mapped[Optional["TaskType"]] = relationship("TaskType", lazy="joined")
 
     asignee_id: Mapped[Optional[int]] = mapped_column(ForeignKey("user_data.user_id"), nullable=True)
-    asignee: Mapped[Optional["User"]] = relationship()
+    asignee: Mapped[Optional["User"]] = relationship(lazy="joined")
 
     # noinspection PyTypeChecker
     status: Mapped[TaskStatuses] = mapped_column(
@@ -78,16 +78,18 @@ class Task(Base, IdMixin):
     agregate_solvent_consumption: Mapped[Optional[float]] = mapped_column(nullable=True)
 
     current_machine_id: Mapped[Optional[int]] = mapped_column(ForeignKey("machines.id"), nullable=True)
-    current_machine: Mapped[Optional["Machine"]] = relationship(
-        "Machine", back_populates="current_task", foreign_keys=[current_machine_id]
-    )
+    current_machine: Mapped[Optional["Machine"]] = relationship("Machine", back_populates="current_task", lazy="joined")
     current_agregate_id: Mapped[Optional[int]] = mapped_column(ForeignKey("agregates.id"), nullable=True)
-    current_agregate: Mapped[Optional["Agregate"]] = relationship("Agregate", back_populates="current_task")
+    current_agregate: Mapped[Optional["Agregate"]] = relationship(
+        "Agregate", back_populates="current_task", lazy="joined"
+    )
 
-    comments: Mapped[Optional[list["TaskComment"]]] = relationship("TaskComment", back_populates="task")
+    comments: Mapped[Optional[list["TaskComment"]]] = relationship(
+        "TaskComment", back_populates="task", order_by="desc(TaskComment.created_at)", lazy="selectin"
+    )
 
     status_history: Mapped[Optional[list["TaskStatusHistory"]]] = relationship(
-        "TaskStatusHistory", back_populates="task"
+        "TaskStatusHistory", back_populates="task", order_by="desc(TaskStatusHistory.timestamp)", lazy="selectin"
     )
 
     def __repr__(self):

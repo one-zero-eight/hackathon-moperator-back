@@ -35,7 +35,18 @@ class TaskView(ModelView, model=Task):
         "current_machine",
         "current_agregate",
     ]
+
     column_list = ["id", "title", "asignee", "description", "status", "priority", "location", "starting", "deadline"]
+    column_details_exclude_list = [
+        "current_machine_id",
+        "current_agregate_id",
+        "id",
+        "comments",
+        "type_id",
+        "asignee_id",
+        "created_at",
+        "updated_at",
+    ]
 
 
 class TaskTypeView(ModelView, model=TaskType):

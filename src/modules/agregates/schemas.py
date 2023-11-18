@@ -1,38 +1,37 @@
-__all__ = ["ViewMachine", "FlatViewMachine"]
+__all__ = ["ViewAgregate", "FlatViewAgregate"]
 
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
-from src.storages.sqlalchemy.models.machines import MachineStatus
 
-
-class FlatViewMachine(BaseModel):
+class FlatViewAgregate(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     name: str
     type: str
-    status: MachineStatus
+    status: str
     current_location: Optional[str] = None
 
 
-class ViewMachine(BaseModel):
+class ViewAgregate(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
+    id: int
     name: str
     type: str
     description: Optional[str] = None
-    status: MachineStatus
+    status: str
     current_location: Optional[str] = None
 
     suitable_tasks: Optional[list["FlatViewTask"]] = None
     current_task: Optional["FlatViewTask"] = None
 
-    suitable_agregates: Optional[list["ViewAgregate"]] = None
+    suitable_machines: Optional[list["FlatViewMachine"]] = None
 
 
 from src.modules.tasks.schemas import FlatViewTask  # noqa: E402
-from src.modules.agregates.schemas import ViewAgregate  # noqa: E402
+from src.modules.machines.schemas import FlatViewMachine  # noqa: E402
 
-ViewMachine.model_rebuild()
+ViewAgregate.model_rebuild()

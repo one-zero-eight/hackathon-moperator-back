@@ -1,4 +1,4 @@
-__all__ = ["Machine"]
+__all__ = ["Machine", "MachineStatus"]
 
 from enum import StrEnum
 
