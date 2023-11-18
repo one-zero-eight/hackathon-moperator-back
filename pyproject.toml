@@ -20,6 +20,7 @@ psycopg2-binary = "^2.9.9"
 paramiko = "^3.3.1"
 passlib = "^1.7.4"
 sqladmin = "^0.16.0"
+fastapi-mock = "^0.2.3"
 
 [tool.poetry.group.prod.dependencies]
 gunicorn = "21.2.0"

@@ -18,18 +18,19 @@ class TaskRepository(AbstractTaskRepository):
     def _create_session(self) -> AsyncSession:
         return self.storage.create_session()
 
-    @classmethod
-    async def get_task(cls, task_id: int) -> Optional[ViewTask]:
-        async with cls._create_session() as session:
+    async def get_task(self, task_id: int) -> Optional[ViewTask]:
+        async with self._create_session() as session:
             q = select(Task).where(Task.id == task_id)
             task = await session.scalar(q)
             if task:
                 return ViewTask.model_validate(task)
 
-    @classmethod
-    async def get_user_tasks(cls, user_id: int) -> Optional[list[ViewTask]]:
-        pass
+    async def get_user_tasks(self, user_id: int) -> Optional[list[ViewTask]]:
+        async with self._create_session() as session:
+            q = select(Task).where(Task.asignee_id == user_id)
+            tasks = await session.scalars(q)
+            if tasks:
+                return [ViewTask.model_validate(task) for task in tasks]
 
-    @classmethod
-    async def change_task_status(cls, task_id: int, status: str) -> ViewTask:
+    async def change_task_status(self, task_id: int, status: str) -> ViewTask:
         pass

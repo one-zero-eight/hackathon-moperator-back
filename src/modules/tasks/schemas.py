@@ -16,7 +16,80 @@ class TaskStatuses(StrEnum):
 
 
 class ViewTask(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "example": {
+                "id": 1,
+                "type": "type",
+                "title": "title",
+                "description": "description",
+                "asignee_id": 1,
+                "asignee": {
+                    "id": 1,
+                    "name": "name",
+                    "surname": "surname",
+                    "email": "email",
+                    "phone": "phone",
+                    "role": "role",
+                    "status": "status",
+                    "created_at": "2021-10-07T16:41:32.000000",
+                    "updated_at": "2021-10-07T16:41:32.000000",
+                },
+                "status": "fs",
+                "priority": "priority",
+                "location": "location",
+                "starting": "2021-10-07T16:41:32.000000",
+                "deadline": "2021-10-07T16:41:32.000000",
+                "created_at": "2021-10-07T16:41:32.000000",
+                "updated_at": "2021-10-07T16:41:32.000000",
+                "work_volume": 1.0,
+                "payment_coefficient": 1.0,
+                "fuel_consumption": 1.0,
+                "agregate_depth": 1.0,
+                "agregate_working_speed": 1.0,
+                "agregate_solvent_consumption": 1.0,
+                "comments": [
+                    {
+                        "id": 1,
+                        "task_id": 1,
+                        "user_id": 1,
+                        "task": {
+                            "id": 1,
+                            "type": "type",
+                            "title": "title",
+                            "description": "description",
+                            "asignee_id": 1,
+                            "asignee": {
+                                "id": 1,
+                                "name": "name",
+                                "surname": "surname",
+                                "email": "email",
+                                "phone": "phone",
+                                "role": "role",
+                                "status": "status",
+                                "created_at": "2021-10-07T16:41:32.000000",
+                                "updated_at": "2021-10-07T16:41:32.000000",
+                            },
+                            "status": "fs",
+                            "priority": "priority",
+                            "location": "location",
+                            "starting": "2021-10-07T16:41:32.000000",
+                            "deadline": "2021-10-07T16:41:32.000000",
+                            "created_at": "2021-10-07T16:41:32.000000",
+                            "updated_at": "2021-10-07T16:41:32.000000",
+                            "work_volume": 1.0,
+                            "payment_coefficient": 1.0,
+                            "fuel_consumption": 1.0,
+                            "agregate_depth": 1.0,
+                            "agregate_working_speed": 1.0,
+                            "agregate_solvent_consumption": 1.0,
+                        },
+                    }
+                ],
+            }
+        },
+    )
 
     id: int
     type: Optional[str] = None
@@ -44,18 +117,18 @@ class ViewTask(BaseModel):
     agregate_solvent_consumption: Optional[float] = None
 
     # TODO: Machine schemas
-    suitable_machines: Optional[list["ViewMachine"]] = None
-    current_machine_id: Optional[int] = None
-    current_machine: Optional["ViewMachine"] = None
+    # suitable_machines: Optional[list["ViewMachine"]] = None
+    # current_machine_id: Optional[int] = None
+    # current_machine: Optional["ViewMachine"] = None
 
     # TODO: Agregate schemas
-    suitable_agregates: Optional[list["ViewAgregate"]] = None
-    current_agregate_id: Optional[int] = None
-    current_agregate: Optional["ViewAgregate"] = None
+    # suitable_agregates: Optional[list["ViewAgregate"]] = None
+    # current_agregate_id: Optional[int] = None
+    # current_agregate: Optional["ViewAgregate"] = None
 
     comments: Optional[list["ViewTaskComment"]] = None  # ????
-
-    status_history: Optional[list["TaskStatusHistory"]] = None
+    # TODO: TaskStatusHistory schemas
+    # status_history: Optional[list["TaskStatusHistory"]] = None
 
 
 class ViewTaskComment(BaseModel):

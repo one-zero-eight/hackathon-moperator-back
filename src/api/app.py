@@ -3,6 +3,7 @@ __all__ = ["app"]
 import warnings
 
 from fastapi import FastAPI
+from fastapi_mock import MockMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 
@@ -28,6 +29,8 @@ app = FastAPI(
     swagger_ui_oauth2_redirect_url=None,
     generate_unique_id_function=generate_unique_operation_id,
 )
+
+app.add_middleware(MockMiddleware)
 
 # CORS settings
 if settings.CORS_ALLOW_ORIGINS:

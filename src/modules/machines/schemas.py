@@ -20,7 +20,7 @@ class ViewMachine(BaseModel):
     suitable_agregates: Optional[list["ViewAgregate"]] = None
 
 
-from src.modules.agregates.schema import ViewAgregate
-from src.modules.tasks.schemas import ViewTask
+from src.modules.agregates.schema import ViewAgregate  # noqa: E402
+from src.modules.tasks.schemas import ViewTask  # noqa: E402
 
 ViewMachine.model_rebuild()
