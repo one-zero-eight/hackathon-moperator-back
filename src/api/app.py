@@ -9,7 +9,7 @@ from starlette.responses import RedirectResponse
 from src.api import docs
 from src.api.routers import routers
 from src.config import settings, Environment
-from src.api.startup import setup_repositories
+from src.api.startup import setup_repositories, setup_admin
 from src.api.docs import generate_unique_operation_id
 
 app = FastAPI(
@@ -48,6 +48,7 @@ else:
 @app.on_event("startup")
 async def startup_event():
     await setup_repositories()
+    setup_admin(app)
 
 
 @app.on_event("shutdown")

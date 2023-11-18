@@ -1,3 +1,5 @@
+from fastapi import FastAPI
+
 from src.config import settings
 from src.modules.auth.repository import AuthRepository
 
@@ -22,3 +24,12 @@ async def setup_repositories():
         Dependencies.set_smtp_repository(smtp_repository)
 
     # await storage.create_all()
+
+
+def setup_admin(app: FastAPI):
+    from src.modules.admin.app import init_app
+    from sqlalchemy.ext.asyncio import create_async_engine
+
+    engine = create_async_engine(settings.DB_URL.get_secret_value(), pool_recycle=3600)
+
+    init_app(app, engine)

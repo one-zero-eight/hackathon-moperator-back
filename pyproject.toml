@@ -19,6 +19,7 @@ asyncpg = "^0.28.0"
 psycopg2-binary = "^2.9.9"
 paramiko = "^3.3.1"
 passlib = "^1.7.4"
+sqladmin = "^0.16.0"
 
 [tool.poetry.group.prod.dependencies]
 gunicorn = "21.2.0"
@@ -42,6 +43,11 @@ addopts = [
 
 [tool.ruff]
 line-length = 120
+ignore = [
+    # wildcard imports are fine
+    "F403",
+    "F405",
+]
 
 [build-system]
 requires = ["poetry-core"]

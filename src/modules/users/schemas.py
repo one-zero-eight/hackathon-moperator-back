@@ -1,8 +1,15 @@
-__all__ = ["ViewUser", "CreateUser", "ViewEmailFlow"]
+__all__ = ["ViewUser", "CreateUser", "UpdateUser", "ViewEmailFlow", "UserCredentials"]
 
+from enum import StrEnum
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
+
+
+class UserRoles(StrEnum):
+    agronomist = "agronomist"
+    moperator = "moperator"
+    admin = "admin"
 
 
 class ViewUser(BaseModel):
@@ -15,7 +22,11 @@ class ViewUser(BaseModel):
     last_name: Optional[str] = None
     first_name: Optional[str] = None
     middle_name: Optional[str] = None
-    role: str
+    role: UserRoles
+
+    @property
+    def is_admin(self) -> bool:
+        return self.role == UserRoles.admin or self.role == UserRoles.agronomist
 
 
 class UserCredentials(BaseModel):
@@ -26,8 +37,25 @@ class UserCredentials(BaseModel):
 
 
 class CreateUser(BaseModel):
-    id: Optional[int] = None
-    name: Optional[str] = None
+    rfid_id: Optional[str] = None
+    email: str
+    password: str
+    role: UserRoles
+    employee_id: Optional[int] = None
+    last_name: Optional[str] = None
+    first_name: Optional[str] = None
+    middle_name: Optional[str] = None
+
+
+class UpdateUser(BaseModel):
+    rfid_id: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
+    employee_id: Optional[int] = None
+    last_name: Optional[str] = None
+    first_name: Optional[str] = None
+    middle_name: Optional[str] = None
+    role: Optional[UserRoles] = None
 
 
 class ViewEmailFlow(BaseModel):

@@ -57,8 +57,10 @@ class Settings(BaseModel):
         "https://moperator.innohassle.ru",
         "http://localhost:3000",
     ]
+    #
+    SECRET_KEY: SecretStr
     # JWT settings
-    JWT_SECRET_KEY: str
+    JWT_PRIVATE_KEY: str
     JWT_PUBLIC_KEY: str
 
     # SMTP server settings
