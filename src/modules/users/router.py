@@ -3,7 +3,7 @@ __all__ = ["router"]
 
 from typing import Annotated
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi import BackgroundTasks
 
 from src.api.dependencies import DEPENDS_SMTP_REPOSITORY, DEPENDS_USER_REPOSITORY
@@ -13,12 +13,35 @@ from src.api.exceptions import (
     NoCredentialsException,
     UserAlreadyExistsException,
 )
+from src.modules.auth.dependencies import verify_request
 from src.modules.smtp.abc import AbstractSMTPRepository
 from src.modules.users.abc import AbstractUserRepository
 from src.modules.auth.schemas import VerificationResult
 from src.modules.users.schemas import ViewUser, CreateUser
 
 router = APIRouter(prefix="/users", tags=["Users"])
+
+
+
+@router.get(
+    "/me",
+    responses={
+        200: {"description": "User info"},
+        **IncorrectCredentialsException.responses,
+        **NoCredentialsException.responses,
+    },
+)
+async def get_me(
+    user_repository: Annotated[AbstractUserRepository, DEPENDS_USER_REPOSITORY],
+    verification: Annotated[VerificationResult, Depends(verify_request)]
+) -> ViewUser:
+    """
+    Get user info
+    """
+
+    user = await user_repository.read(verification.user_id)
+    user: ViewUser
+    return user
 
 
 @router.get(
@@ -31,7 +54,6 @@ router = APIRouter(prefix="/users", tags=["Users"])
 )
 async def get_user(
     user_id: int,
-#     _verification: Annotated[VerificationResult, DEPENDS_USER_REPOSITORY],
     user_repository: Annotated[AbstractUserRepository, DEPENDS_USER_REPOSITORY],
 ) -> ViewUser:
     """
@@ -41,7 +63,6 @@ async def get_user(
     user: ViewUser
     return user
 
-
 if settings.SMTP_ENABLED:
     @router.post("/connect-email", tags=["Email"])
     async def connect_email(
@@ -49,7 +70,6 @@ if settings.SMTP_ENABLED:
         user_id: int,
         background_tasks: BackgroundTasks,
         smtp_repository: Annotated[AbstractSMTPRepository, DEPENDS_SMTP_REPOSITORY],
-        _verification: Annotated[VerificationResult, DEPENDS_BOT],
         user_repository: Annotated[AbstractUserRepository, DEPENDS_USER_REPOSITORY],
     ):
         """

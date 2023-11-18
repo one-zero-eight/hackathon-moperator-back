@@ -1,4 +1,4 @@
-__all__ = ["VerificationResult", "AuthResult", "AuthCredentials", "AuthTag"]
+__all__ = ["VerificationResult", "AuthResult", "EmailAuthCredentials", "TagAuthCredentials"]
 
 from typing import Optional
 
@@ -13,14 +13,12 @@ class VerificationResult(BaseModel):
 class AuthResult(BaseModel):
     success: bool
     token: Optional[str] = None
-    token_type: Optional[str] = None
-    user_id: Optional[int] = None
 
 
-class AuthCredentials(BaseModel):
+class EmailAuthCredentials(BaseModel):
     login: str
     password: str
 
 
-class AuthCredentials(BaseModel):
+class TagAuthCredentials(BaseModel):
     tag: str

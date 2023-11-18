@@ -38,7 +38,7 @@ class UserRepository(AbstractUserRepository):
 
     async def read(self, id_: int) -> Optional["ViewUser"]:
         async with self._create_session() as session:
-            q = select(User).where(User.id == id_)
+            q = select(User).where(User.user_id == id_)
             user = await session.scalar(q)
             if user:
                 return ViewUser.model_validate(user, from_attributes=True)

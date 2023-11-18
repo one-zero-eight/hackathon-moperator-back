@@ -15,7 +15,6 @@ class UserRoles(Base, IdMixin):
 
 class User(Base):
     __tablename__ = "user_data"
-
     user_id: Mapped[int] = mapped_column(primary_key=True)
     rfid_id: Mapped[str] = mapped_column(unique=True)
 

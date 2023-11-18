@@ -35,7 +35,6 @@ async def verify_request(
     :raises NoCredentialsException: if token is not provided
     :raises IncorrectCredentialsException: if token is invalid
     """
-
     if not bearer:
         raise NoCredentialsException()
 

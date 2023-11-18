@@ -8,10 +8,21 @@ from pydantic import BaseModel, ConfigDict
 class ViewUser(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    name: Optional[str] = None
+    user_id: int
+    rfid_id: Optional[str] = None
+    email: str
+    employee_id: Optional[int] = None
+    last_name: Optional[str] = None
+    first_name: Optional[str] = None
+    middle_name: Optional[str] = None
+    role: str
 
-    email: Optional[str] = None
-    email_verified: Optional[bool] = None
+
+class UserCredentials(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    user_id: int
+    password_hash: str
 
 
 class CreateUser(BaseModel):

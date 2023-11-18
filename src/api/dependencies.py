@@ -4,7 +4,7 @@ __all__ = [
     "DEPENDS_STORAGE",
     "DEPENDS_USER_REPOSITORY",
     "DEPENDS_VERIFIED_REQUEST",
-    "DEPENDS_TOKEN_REPOSITORY",
+    "DEPENDS_AUTH_REPOSITORY",
     "Dependencies",
 ]
 
@@ -12,7 +12,7 @@ from fastapi import Depends
 
 from src.modules.smtp.abc import AbstractSMTPRepository
 from src.modules.users.abc import AbstractUserRepository
-from src.modules.auth.abc import AbstractTokenRepository
+from src.modules.auth.abc import AbstractTokenRepository, AbstractAuthRepository
 from src.storages.sqlalchemy.storage import AbstractSQLAlchemyStorage
 
 
@@ -20,7 +20,8 @@ class Dependencies:
     _storage: "AbstractSQLAlchemyStorage"
     _user_repository: "AbstractUserRepository"
     _smtp_repository: "AbstractSMTPRepository"
-    _token_repository: "AbstractTokenRepository"
+    _auth_repository: "AbstractAuthRepository"
+
 
     @classmethod
     def get_storage(cls) -> "AbstractSQLAlchemyStorage":
@@ -47,12 +48,12 @@ class Dependencies:
         cls._smtp_repository = smtp_repository
 
     @classmethod
-    def get_token_repository(cls) -> "AbstractTokenRepository":
-        return cls._token_repository
+    def get_auth_repository(cls) -> "AbstractAuthRepository":
+        return cls._auth_repository
 
     @classmethod
-    def set_token_repository(cls, token_repository: "AbstractTokenRepository"):
-        cls._token_repository = token_repository
+    def set_auth_repository(cls, auth_repository: "AbstractAuthRepository"):
+        cls._auth_repository = auth_repository
 
 
 DEPENDS = Depends(lambda: Dependencies)
@@ -61,7 +62,8 @@ See `FastAPI docs <(https://fastapi.tiangolo.com/tutorial/dependencies/)>`_ for 
 DEPENDS_STORAGE = Depends(Dependencies.get_storage)
 DEPENDS_USER_REPOSITORY = Depends(Dependencies.get_user_repository)
 DEPENDS_SMTP_REPOSITORY = Depends(Dependencies.get_smtp_repository)
-DEPENDS_TOKEN_REPOSITORY = Depends(Dependencies.get_token_repository)
+DEPENDS_AUTH_REPOSITORY = Depends(Dependencies.get_auth_repository)
+
 from src.modules.auth.dependencies import verify_request  # noqa: E402
 
 DEPENDS_VERIFIED_REQUEST = Depends(verify_request)
