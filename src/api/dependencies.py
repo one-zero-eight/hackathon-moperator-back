@@ -12,7 +12,7 @@ from fastapi import Depends
 
 from src.modules.smtp.abc import AbstractSMTPRepository
 from src.modules.users.abc import AbstractUserRepository
-from src.modules.auth.abc import AbstractTokenRepository, AbstractAuthRepository
+from src.modules.auth.abc import AbstractAuthRepository
 from src.storages.sqlalchemy.storage import AbstractSQLAlchemyStorage
 
 
@@ -21,7 +21,6 @@ class Dependencies:
     _user_repository: "AbstractUserRepository"
     _smtp_repository: "AbstractSMTPRepository"
     _auth_repository: "AbstractAuthRepository"
-
 
     @classmethod
     def get_storage(cls) -> "AbstractSQLAlchemyStorage":

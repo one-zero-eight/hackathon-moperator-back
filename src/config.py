@@ -54,9 +54,13 @@ class Settings(BaseModel):
     COOKIE: Cookies = Field(default_factory=Cookies)
     # CORS configuration
     CORS_ALLOW_ORIGINS: list[str] = [
-        "https://monitor.innohassle.ru",
+        "https://moperator.innohassle.ru",
         "http://localhost:3000",
     ]
+    # JWT settings
+    JWT_SECRET_KEY: str
+    JWT_PUBLIC_KEY: str
+
     # SMTP server settings
     SMTP_ENABLED: bool = False
     SMTP: Optional[Smtp] = None

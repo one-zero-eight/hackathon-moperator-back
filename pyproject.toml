@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "fastapi-template"
+name = "hackathon-moperator-back"
 version = "0.1.0"
 description = ""
 authors = ["one-zero-eight <https://t.me/one_zero_eight>"]

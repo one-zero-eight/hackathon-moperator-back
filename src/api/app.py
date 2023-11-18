@@ -4,6 +4,7 @@ import warnings
 
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import RedirectResponse
 
 from src.api import docs
 from src.api.routers import routers
@@ -55,6 +56,12 @@ async def close_connection():
 
     storage = Dependencies.get_storage()
     await storage.close_connection()
+
+
+# Redirect root to docs
+@app.get("/")
+async def redirect_to_docs():
+    return RedirectResponse(url="/docs")
 
 
 for router in routers:

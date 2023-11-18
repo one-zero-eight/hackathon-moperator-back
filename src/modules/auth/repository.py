@@ -13,7 +13,7 @@ from src.api.exceptions import IncorrectCredentialsException
 from src.config import settings
 from src.modules.auth.abc import AbstractTokenRepository, AbstractAuthRepository
 from src.modules.auth.schemas import VerificationResult
-from src.modules.users.schemas import ViewUser, UserCredentials
+from src.modules.users.schemas import UserCredentials
 from src.storages.sqlalchemy import AbstractSQLAlchemyStorage
 from src.storages.sqlalchemy.models import User
 
@@ -55,9 +55,7 @@ class TokenRepository(AbstractTokenRepository):
         issued_at = datetime.utcnow()
         expire = issued_at + expires_delta
         payload.update({"exp": expire, "iat": issued_at})
-        encoded_jwt = jwt.encode(
-            {"alg": cls.ALGORITHM}, payload, settings.JWT_PRIVATE_KEY
-        )
+        encoded_jwt = jwt.encode({"alg": cls.ALGORITHM}, payload, settings.JWT_PRIVATE_KEY)
         return str(encoded_jwt, "utf-8")
 
 

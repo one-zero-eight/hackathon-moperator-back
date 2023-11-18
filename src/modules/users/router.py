@@ -11,16 +11,14 @@ from src.config import settings
 from src.api.exceptions import (
     IncorrectCredentialsException,
     NoCredentialsException,
-    UserAlreadyExistsException,
 )
 from src.modules.auth.dependencies import verify_request
 from src.modules.smtp.abc import AbstractSMTPRepository
 from src.modules.users.abc import AbstractUserRepository
 from src.modules.auth.schemas import VerificationResult
-from src.modules.users.schemas import ViewUser, CreateUser
+from src.modules.users.schemas import ViewUser
 
 router = APIRouter(prefix="/users", tags=["Users"])
-
 
 
 @router.get(
@@ -33,7 +31,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 )
 async def get_me(
     user_repository: Annotated[AbstractUserRepository, DEPENDS_USER_REPOSITORY],
-    verification: Annotated[VerificationResult, Depends(verify_request)]
+    verification: Annotated[VerificationResult, Depends(verify_request)],
 ) -> ViewUser:
     """
     Get user info
@@ -63,7 +61,9 @@ async def get_user(
     user: ViewUser
     return user
 
+
 if settings.SMTP_ENABLED:
+
     @router.post("/connect-email", tags=["Email"])
     async def connect_email(
         email: str,
