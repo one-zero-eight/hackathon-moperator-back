@@ -42,7 +42,7 @@ async def get_all(
         **NoCredentialsException.responses,
     },
 )
-async def get_task(
+async def get_machine(
     machine_id: int,
     verification: Annotated[VerificationResult, Depends(verify_request)],
     machine_repository: Annotated[AbstractMachineRepository, DEPENDS_MACHINE_REPOSITORY],
