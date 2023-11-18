@@ -8,16 +8,33 @@ __all__ = [
 ]
 
 import datetime
+from enum import StrEnum
+from typing import TYPE_CHECKING, Optional
 
-from src.storages.sqlalchemy.utils import *
 from src.storages.sqlalchemy.models.__mixin__ import IdMixin
 from src.storages.sqlalchemy.models.base import Base
-from typing import TYPE_CHECKING, Optional
+from src.storages.sqlalchemy.utils import *
 
 if TYPE_CHECKING:
     from src.storages.sqlalchemy.models.users import User
     from src.storages.sqlalchemy.models.machines import Machine
     from src.storages.sqlalchemy.models.agregates import Agregate
+
+
+class TaskStatuses(StrEnum):
+    draft = "draft"
+    assigned = "assigned"
+    in_progress = "in_progress"
+    paused = "paused"
+    completed = "completed"
+    canceled = "canceled"
+
+
+class TaskPriority(StrEnum):
+    undefined = "undefined"
+    low = "low"
+    medium = "medium"
+    high = "high"
 
 
 class Task(Base, IdMixin):
@@ -29,8 +46,15 @@ class Task(Base, IdMixin):
     type: Mapped[Optional["TaskType"]] = relationship("TaskType")
     asignee_id: Mapped[Optional[int]] = mapped_column(ForeignKey("user_data.user_id"), nullable=True)
     asignee: Mapped[Optional["User"]] = relationship()
-    status: Mapped[Optional[str]] = mapped_column(nullable=False, default="draft")
-    priority: Mapped[Optional[str]] = mapped_column(nullable=False, default="low")
+
+    # noinspection PyTypeChecker
+    status: Mapped[TaskStatuses] = mapped_column(
+        SQLEnum(TaskStatuses), nullable=False, server_default=TaskStatuses.draft.value
+    )
+
+    priority: Mapped[TaskPriority] = mapped_column(
+        SQLEnum(TaskPriority), nullable=False, default=TaskPriority.undefined
+    )
     location: Mapped[Optional[str]] = mapped_column(nullable=False, default="")
 
     starting: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime, nullable=True)

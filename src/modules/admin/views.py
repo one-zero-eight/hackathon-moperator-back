@@ -17,7 +17,24 @@ class UserView(ModelView, model=User):
 class TaskView(ModelView, model=Task):
     icon = "fa-solid fa-circle-exclamation"
 
-    form_excluded_columns = ["comments", "status_history", "created_at", "updated_at"]
+    form_columns = [
+        "title",
+        "type",
+        "asignee",
+        "status",
+        "priority",
+        "location",
+        "starting",
+        "deadline",
+        # "work_volume",
+        # "payment_coefficient",
+        # "fuel_consumption",
+        # "agregate_depth",
+        # "agregate_working_speed",
+        # "agregate_solvent_consumption",
+        "current_machine",
+        "current_agregate",
+    ]
     column_list = ["id", "title", "asignee", "description", "status", "priority", "location", "starting", "deadline"]
 
 
