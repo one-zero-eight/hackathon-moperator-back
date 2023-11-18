@@ -13,14 +13,22 @@ import datetime
 from enum import StrEnum
 from typing import TYPE_CHECKING, Optional
 
+from fastapi_storages import FileSystemStorage
+from sqlalchemy import Column
+
 from src.storages.sqlalchemy.models.__mixin__ import IdMixin
 from src.storages.sqlalchemy.models.base import Base
 from src.storages.sqlalchemy.utils import *
+
+from fastapi_storages.integrations.sqlalchemy import FileType
 
 if TYPE_CHECKING:
     from src.storages.sqlalchemy.models.users import User
     from src.storages.sqlalchemy.models.machines import Machine
     from src.storages.sqlalchemy.models.agregates import Agregate
+
+
+attachments_storage = FileSystemStorage(path="/tmp")
 
 
 class TaskStatuses(StrEnum):
@@ -89,6 +97,8 @@ class Task(Base, IdMixin):
     status_history: Mapped[Optional[list["TaskStatusHistory"]]] = relationship(
         "TaskStatusHistory", back_populates="task", order_by="desc(TaskStatusHistory.timestamp)", lazy="selectin"
     )
+
+    attachments = Column(FileType(storage=attachments_storage))
 
     def __repr__(self):
         return f"{self.title} ({self.status})"

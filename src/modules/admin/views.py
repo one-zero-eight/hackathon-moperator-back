@@ -63,6 +63,7 @@ class TaskView(CustomModelView, model=Task):
         # "agregate_solvent_consumption",
         "current_machine",
         "current_agregate",
+        "attachments",
     ]
 
     column_list = ["id", "title", "asignee", "description", "status", "priority", "location", "starting", "deadline"]
