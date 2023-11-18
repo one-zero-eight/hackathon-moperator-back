@@ -17,6 +17,8 @@ __all__ = [
     "bindparam",
     "DateTime",
     "func",
+    "SQLEnum",
+    "String",
 ]
 
 from sqlalchemy import ForeignKey, UniqueConstraint
@@ -26,3 +28,4 @@ from sqlalchemy import and_, or_, any_, not_
 from sqlalchemy import bindparam
 from sqlalchemy import DateTime
 from sqlalchemy.sql import func
+from sqlalchemy import Enum as SQLEnum, String

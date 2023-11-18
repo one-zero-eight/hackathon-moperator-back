@@ -4,6 +4,8 @@ from typing import Optional, Union, Sequence
 
 from fastapi import FastAPI
 from sqladmin import Admin
+
+# noinspection PyProtectedMember
 from sqladmin._types import ENGINE_TYPE
 from sqladmin.authentication import AuthenticationBackend
 from sqlalchemy import Engine

@@ -1,5 +1,6 @@
 __all__ = [
     "Task",
+    "TaskType",
     "TaskSuitableMachines",
     "TaskComment",
     "TaskStatusHistory",
@@ -22,9 +23,10 @@ if TYPE_CHECKING:
 class Task(Base, IdMixin):
     __tablename__ = "tasks"
 
-    type: Mapped[Optional[str]] = mapped_column(nullable=False, default="task")
-    title: Mapped[Optional[str]] = mapped_column(nullable=False, default="Task title")
-    description: Mapped[Optional[str]] = mapped_column(default="")
+    title: Mapped[Optional[str]] = mapped_column(nullable=False, default="Task title #1")
+
+    type_id: Mapped[Optional[int]] = mapped_column(ForeignKey("task_types.id"), nullable=False)
+    type: Mapped[Optional["TaskType"]] = relationship("TaskType")
     asignee_id: Mapped[Optional[int]] = mapped_column(ForeignKey("user_data.user_id"), nullable=True)
     asignee: Mapped[Optional["User"]] = relationship()
     status: Mapped[Optional[str]] = mapped_column(nullable=False, default="draft")
@@ -48,15 +50,9 @@ class Task(Base, IdMixin):
     agregate_working_speed: Mapped[Optional[float]] = mapped_column(nullable=True)
     agregate_solvent_consumption: Mapped[Optional[float]] = mapped_column(nullable=True)
 
-    suitable_machines: Mapped[Optional[list["Machine"]]] = relationship(
-        "Machine", secondary="task_suitable_machines", back_populates="suitable_tasks"
-    )
     current_machine_id: Mapped[Optional[int]] = mapped_column(ForeignKey("machines.id"), nullable=True)
     current_machine: Mapped[Optional["Machine"]] = relationship("Machine", back_populates="current_task")
 
-    suitable_agregates: Mapped[Optional[list["Agregate"]]] = relationship(
-        "Agregate", secondary="task_suitable_agregates", back_populates="suitable_tasks"
-    )
     current_agregate_id: Mapped[Optional[int]] = mapped_column(ForeignKey("agregates.id"), nullable=True)
     current_agregate: Mapped[Optional["Agregate"]] = relationship("Agregate", back_populates="current_task")
 
@@ -67,20 +63,33 @@ class Task(Base, IdMixin):
     )
 
     def __repr__(self):
-        return f"Task({self.title})"
+        return f"{self.title}"
+
+
+class TaskType(Base, IdMixin):
+    __tablename__ = "task_types"
+
+    title: Mapped[Optional[str]] = mapped_column(nullable=False, default="Task title")
+    description: Mapped[Optional[str]] = mapped_column(default="")
+    suitable_machines: Mapped[Optional[list["Machine"]]] = relationship(
+        "Machine", secondary="task_suitable_machines", back_populates="suitable_task_types"
+    )
+    suitable_agregates: Mapped[Optional[list["Agregate"]]] = relationship(
+        "Agregate", secondary="task_suitable_agregates", back_populates="suitable_task_types"
+    )
 
 
 class TaskSuitableMachines(Base):
     __tablename__ = "task_suitable_machines"
 
-    task_id: Mapped[int] = mapped_column(ForeignKey(Task.id), primary_key=True)
+    task_type_id: Mapped[int] = mapped_column(ForeignKey(TaskType.id), primary_key=True)
     machine_id: Mapped[int] = mapped_column(ForeignKey("machines.id"), primary_key=True)
 
 
 class TaskSuitableAgregates(Base):
     __tablename__ = "task_suitable_agregates"
 
-    task_id: Mapped[int] = mapped_column(ForeignKey(Task.id), primary_key=True)
+    task_type_id: Mapped[int] = mapped_column(ForeignKey(TaskType.id), primary_key=True)
     agregate_id: Mapped[int] = mapped_column(ForeignKey("agregates.id"), primary_key=True)
 
 
