@@ -4,7 +4,7 @@ db_url: postgresql+asyncpg://postgres:postgres@localhost:5432/postgres
 
 # ---------- Application settings ----- #
 # Run 'openssl genrsa -out private.pem 2048' to generate keys
-JWT_SECRET: |
+JWT_SECRET_KEY: |
     -----BEGIN RSA PRIVATE KEY-----
     ssssssssssssssssssssssssssssss
     ssssssssssssssssssssssssssssss
@@ -12,7 +12,7 @@ JWT_SECRET: |
     ssssssssssssssssssssssssssssss
     -----END RSA PRIVATE KEY-----
 # For existing key run 'openssl rsa -in private.pem -pubout -out public.pem'
-JWT_PUBLIC: |
+JWT_PUBLIC_KEY: |
     -----BEGIN PUBLIC KEY-----
     ssssssssssssssssssssssssssssss
     ssssssssssssssssssssssssssssss
