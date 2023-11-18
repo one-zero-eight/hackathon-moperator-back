@@ -5,11 +5,14 @@ __all__ = [
     "DEPENDS_USER_REPOSITORY",
     "DEPENDS_VERIFIED_REQUEST",
     "DEPENDS_AUTH_REPOSITORY",
+    "DEPENDS_TASK_REPOSITORY",
+    "DEPENDS_MACHINE_REPOSITORY",
     "Dependencies",
 ]
 
 from fastapi import Depends
 
+from src.modules.agregates.abc import AbstractAgregateRepository
 from src.modules.machines.abc import AbstractMachineRepository
 from src.modules.smtp.abc import AbstractSMTPRepository
 from src.modules.users.abc import AbstractUserRepository
@@ -25,6 +28,7 @@ class Dependencies:
     _auth_repository: "AbstractAuthRepository"
     _task_repository: "AbstractTaskRepository"
     _machine_repository: "AbstractMachineRepository"
+    _agregate_repository: "AbstractAgregateRepository"
 
     @classmethod
     def get_storage(cls) -> "AbstractSQLAlchemyStorage":
@@ -74,6 +78,14 @@ class Dependencies:
     def set_machine_repository(cls, machine_repository: "AbstractMachineRepository"):
         cls._machine_repository = machine_repository
 
+    @classmethod
+    def get_agregate_repository(cls) -> "AbstractAgregateRepository":
+        return cls._agregate_repository
+
+    @classmethod
+    def set_agregate_repository(cls, agregate_repository: "AbstractAgregateRepository"):
+        cls._agregate_repository = agregate_repository
+
 
 DEPENDS = Depends(lambda: Dependencies)
 """It's a dependency injection container for FastAPI.
@@ -84,6 +96,7 @@ DEPENDS_SMTP_REPOSITORY = Depends(Dependencies.get_smtp_repository)
 DEPENDS_AUTH_REPOSITORY = Depends(Dependencies.get_auth_repository)
 DEPENDS_TASK_REPOSITORY = Depends(Dependencies.get_task_repository)
 DEPENDS_MACHINE_REPOSITORY = Depends(Dependencies.get_machine_repository)
+DEPENDS_AGREGATE_REPOSITORY = Depends(Dependencies.get_agregate_repository)
 
 from src.modules.auth.dependencies import verify_request  # noqa: E402
 

@@ -4,6 +4,7 @@ from src.config import settings
 from src.modules.auth.repository import AuthRepository
 from src.modules.machines.repository import MachineRepository
 from src.modules.tasks.repository import TaskRepository
+from src.modules.agregates.repository import AgregateRepository
 
 
 async def setup_repositories():
@@ -18,12 +19,14 @@ async def setup_repositories():
     auth_repository = AuthRepository(storage)
     task_repository = TaskRepository(storage)
     machine_repository = MachineRepository(storage)
+    agregate_repository = AgregateRepository(storage)
 
     Dependencies.set_auth_repository(auth_repository)
     Dependencies.set_storage(storage)
     Dependencies.set_user_repository(user_repository)
     Dependencies.set_task_repository(task_repository)
     Dependencies.set_machine_repository(machine_repository)
+    Dependencies.set_agregate_repository(agregate_repository)
 
     if settings.SMTP_ENABLED:
         smtp_repository = SMTPRepository()

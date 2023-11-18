@@ -1,4 +1,4 @@
-__all__ = ["TokenRepository"]
+__all__ = ["TokenRepository", "AuthRepository"]
 
 from datetime import timedelta, datetime
 from typing import Optional

@@ -5,6 +5,7 @@ from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.api.exceptions import ObjectNotFound
 from src.modules.machines.abc import AbstractMachineRepository
 from src.modules.machines.schemas import ViewMachine
 from src.storages.sqlalchemy import AbstractSQLAlchemyStorage
@@ -22,8 +23,9 @@ class MachineRepository(AbstractMachineRepository):
         async with self._create_session() as session:
             q = select(Machine).where(Machine.id == machine_id)
             machine = await session.scalar(q)
-            if machine:
-                return ViewMachine.model_validate(machine)
+            if machine is None:
+                raise ObjectNotFound()
+            return ViewMachine.model_validate(machine)
 
     async def get_all(self) -> Optional[list[ViewMachine]]:
         async with self._create_session() as session:
