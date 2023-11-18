@@ -1,13 +1,15 @@
 __all__ = ["models"]
 
+
 from sqladmin import ModelView
 from sqlalchemy.orm import InstrumentedAttribute
+from starlette.requests import Request
 
 from src.storages.sqlalchemy.models import User, Task, Machine, Agregate
 from src.storages.sqlalchemy.models.tasks import TaskType
 
 
-class CustomModelView(ModelView):
+class CustomTaskModelView(ModelView):
     export_columns: list[str | InstrumentedAttribute] = None
 
     def get_export_columns(self) -> list[str]:
@@ -18,6 +20,16 @@ class CustomModelView(ModelView):
             defaults=self._list_prop_names,
         )
 
+    async def on_model_change(self, data: dict, model: Task, is_created: bool, request: Request) -> None:
+        """Called when creating or updating a model."""
+
+        new_status = data.get("status")
+        previous_status = model.status
+
+        if previous_status is None or previous_status == "draft":
+            if new_status is not None and new_status != "draft":
+                print("Task is started")
+
 
 class UserView(ModelView, model=User):
     form_excluded_columns = ["password_hash", "email_flows"]
@@ -27,7 +39,7 @@ class UserView(ModelView, model=User):
     icon = "fa-solid fa-user"
 
 
-class TaskView(CustomModelView, model=Task):
+class TaskView(CustomTaskModelView, model=Task):
     icon = "fa-solid fa-circle-exclamation"
 
     export_columns = [
@@ -63,7 +75,6 @@ class TaskView(CustomModelView, model=Task):
         # "agregate_solvent_consumption",
         "current_machine",
         "current_agregate",
-        "attachments",
     ]
 
     column_list = ["id", "title", "asignee", "description", "status", "priority", "location", "starting", "deadline"]
