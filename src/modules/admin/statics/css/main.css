@@ -1,3 +1,18 @@
 .table thead th {
     text-transform: none;
 }
+
+:root {
+    --tblr-primary: rgb(22, 163, 74);
+    --tblr-secondary: rgb(20, 83, 45);
+    --tblr-icon-color: rgb(255, 255, 255);
+    --tblr-link-color-rgb: 22, 163, 74;
+}
+
+.navbar-dark {
+    --tblr-navbar-bg: rgb(20, 83, 45);
+}
+
+.btn-secondary {
+
+}
