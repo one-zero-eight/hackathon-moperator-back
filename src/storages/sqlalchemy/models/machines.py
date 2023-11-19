@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from src.storages.sqlalchemy.models.agregates import Agregate
 
 
-machines_attachments_storage = FileSystemStorage(path="/tmp")
+machines_attachments_storage = FileSystemStorage(path="./tmp")
 
 
 class MachineStatus(StrEnum):

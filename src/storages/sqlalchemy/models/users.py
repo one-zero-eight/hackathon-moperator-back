@@ -11,7 +11,7 @@ from src.storages.sqlalchemy.models.__mixin__ import IdMixin
 from src.storages.sqlalchemy.models.base import Base
 
 
-photo_storage = FileSystemStorage(path="/tmp")
+photo_storage = FileSystemStorage(path="./tmp")
 
 
 class UserRoles(Base, IdMixin):

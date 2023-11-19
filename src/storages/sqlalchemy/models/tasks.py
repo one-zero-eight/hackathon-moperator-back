@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from src.storages.sqlalchemy.models.agregates import Agregate
 
 
-tasks_attachments_storage = FileSystemStorage(path="/tmp")
+tasks_attachments_storage = FileSystemStorage(path="./tmp")
 
 
 class TaskStatuses(StrEnum):
