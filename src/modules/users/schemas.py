@@ -1,5 +1,6 @@
-__all__ = ["ViewUser", "CreateUser", "UpdateUser", "ViewEmailFlow", "UserCredentials"]
+__all__ = ["ViewUser", "CreateUser", "UpdateUser", "ViewEmailFlow", "UserCredentials", "Notification"]
 
+import datetime
 from enum import StrEnum
 from typing import Optional
 
@@ -62,3 +63,9 @@ class ViewEmailFlow(BaseModel):
     email: str
     auth_code: str
     user_id: int
+
+
+class Notification(BaseModel):
+    title: str
+    description: str
+    created_at: datetime.datetime

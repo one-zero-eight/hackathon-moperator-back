@@ -4,11 +4,20 @@ from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.modules.users.schemas import ViewUser, CreateUser, ViewEmailFlow
+    from src.modules.users.schemas import ViewUser, CreateUser, ViewEmailFlow, Notification
 
 
 class AbstractUserRepository(metaclass=ABCMeta):
     # ----------------- CRUD ----------------- #
+
+    @abstractmethod
+    def add_notification(self, user_id: int, notification: "Notification"):
+        ...
+
+    @abstractmethod
+    def read_and_clear_notifications(self, user_id: int) -> list["Notification"]:
+        ...
+
     @abstractmethod
     async def create(self, user: "CreateUser") -> "ViewUser":
         ...

@@ -1,6 +1,7 @@
 __all__ = ["UserRepository"]
 
 import random
+from collections import defaultdict
 from typing import Optional
 
 from sqlalchemy import select, update, insert
@@ -8,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.exceptions import UserNotFound, EmailFlowNotFound, UserAlreadyHasEmail
 from src.modules.users.abc import AbstractUserRepository
-from src.modules.users.schemas import ViewUser, CreateUser, ViewEmailFlow
+from src.modules.users.schemas import ViewUser, CreateUser, ViewEmailFlow, Notification
 from src.storages.sqlalchemy.models.users import User, EmailFlow
 from src.storages.sqlalchemy.storage import AbstractSQLAlchemyStorage
 
@@ -20,12 +21,22 @@ def _generate_auth_code() -> str:
 
 class UserRepository(AbstractUserRepository):
     storage: AbstractSQLAlchemyStorage
+    notifications: dict[int, list[Notification]]
 
     def __init__(self, storage: AbstractSQLAlchemyStorage):
         self.storage = storage
+        self.notifications = defaultdict(list)
 
     def _create_session(self) -> AsyncSession:
         return self.storage.create_session()
+
+    def add_notification(self, user_id: int, notification: Notification):
+        self.notifications[user_id].append(notification)
+
+    def read_and_clear_notifications(self, user_id: int) -> list[Notification]:
+        notifications = self.notifications[user_id]
+        self.notifications[user_id] = list()
+        return notifications
 
     # ------------------ CRUD ------------------ #
 

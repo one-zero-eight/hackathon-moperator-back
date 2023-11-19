@@ -1,10 +1,13 @@
 __all__ = ["models"]
 
+import datetime
 
 from sqladmin import ModelView
 from sqlalchemy.orm import InstrumentedAttribute
 from starlette.requests import Request
 
+from src.api.dependencies import Dependencies
+from src.modules.users.schemas import Notification
 from src.storages.sqlalchemy.models import User, Task, Machine, Agregate
 from src.storages.sqlalchemy.models.tasks import TaskType
 
@@ -24,15 +27,30 @@ class CustomTaskModelView(ModelView):
         """Called when creating or updating a model."""
 
         new_status = data.get("status")
-        previous_status = model.status
 
-        if previous_status is None or previous_status == "draft":
-            if new_status is not None and new_status != "draft":
-                print("Task is started")
+        if new_status is None or new_status == "draft":
+            return
+
+        if model.status == new_status:
+            return
+
+        if model.asignee_id is None:
+            return
+
+        user_repository = Dependencies.get_user_repository()
+        user_repository.add_notification(
+            int(model.asignee_id),
+            Notification(
+                title="Задание изменило статус!",
+                description=f"'{model.title}' теперь имеет статус '{new_status}'\n"
+                f"Время: {datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}",
+                created_at=datetime.datetime.now(),
+            ),
+        )
 
 
 class UserView(ModelView, model=User):
-    form_excluded_columns = ["password_hash", "email_flows"]
+    form_excluded_columns = ["email_flows"]
     column_details_exclude_list = ["password_hash", "email_flows"]
     column_exclude_list = ["password_hash", "email_flows"]
 

@@ -15,7 +15,7 @@ from src.modules.auth.dependencies import verify_request
 from src.modules.smtp.abc import AbstractSMTPRepository
 from src.modules.users.abc import AbstractUserRepository
 from src.modules.auth.schemas import VerificationResult
-from src.modules.users.schemas import ViewUser
+from src.modules.users.schemas import ViewUser, Notification
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -39,6 +39,26 @@ async def get_me(
     user = await user_repository.read(verification.user_id)
     user: ViewUser
     return user
+
+
+@router.get(
+    "/my-notifications",
+    responses={
+        200: {"description": "Notifications"},
+        **IncorrectCredentialsException.responses,
+        **NoCredentialsException.responses,
+    },
+)
+async def get_my_notifications(
+    user_repository: Annotated[AbstractUserRepository, DEPENDS_USER_REPOSITORY],
+    verification: Annotated[VerificationResult, Depends(verify_request)],
+) -> list[Notification]:
+    """
+    Get user notifications
+    """
+
+    user_id = verification.user_id
+    return user_repository.read_and_clear_notifications(user_id)
 
 
 @router.get(
