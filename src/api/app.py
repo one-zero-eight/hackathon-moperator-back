@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi_mock import MockMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
+from starlette.staticfiles import StaticFiles
 
 from src.api import docs
 from src.api.routers import routers
@@ -31,6 +32,9 @@ app = FastAPI(
 )
 
 app.add_middleware(MockMiddleware)
+
+# staticfiles
+app.mount("/tmp", StaticFiles(directory="tmp"), name="tmp")
 
 # CORS settings
 if settings.CORS_ALLOW_ORIGINS:
