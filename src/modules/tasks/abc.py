@@ -18,3 +18,7 @@ class AbstractTaskRepository(metaclass=ABCMeta):
     @abstractmethod
     async def change_task_status(self, task_id: int, status: str) -> FlatViewTask:
         ...
+
+    @abstractmethod
+    async def get_all(self) -> Optional[list[FlatViewTask]]:
+        ...

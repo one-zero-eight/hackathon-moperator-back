@@ -30,6 +30,13 @@ class UserRepository(AbstractUserRepository):
     def _create_session(self) -> AsyncSession:
         return self.storage.create_session()
 
+    async def get_all(self) -> list["ViewUser"]:
+        async with self._create_session() as session:
+            q = select(User)
+            users = await session.scalars(q)
+            if users:
+                return [ViewUser.model_validate(user, from_attributes=True) for user in users]
+
     def add_notification(self, user_id: int, notification: Notification):
         self.notifications[user_id].append(notification)
 

@@ -11,6 +11,10 @@ class AbstractUserRepository(metaclass=ABCMeta):
     # ----------------- CRUD ----------------- #
 
     @abstractmethod
+    def get_all(self) -> list["ViewUser"]:
+        ...
+
+    @abstractmethod
     def add_notification(self, user_id: int, notification: "Notification"):
         ...
 

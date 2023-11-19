@@ -21,6 +21,26 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.get(
+    "/",
+    responses={
+        200: {"description": "All users"},
+        **IncorrectCredentialsException.responses,
+        **NoCredentialsException.responses,
+    },
+)
+async def get_all(
+    user_repository: Annotated[AbstractUserRepository, DEPENDS_USER_REPOSITORY],
+    verification: Annotated[VerificationResult, Depends(verify_request)],
+) -> list[ViewUser]:
+    """
+    Get all users info
+    """
+
+    users = await user_repository.get_all()
+    return users
+
+
+@router.get(
     "/me",
     responses={
         200: {"description": "User info"},

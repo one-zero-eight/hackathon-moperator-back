@@ -16,6 +16,26 @@ router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 
 @router.get(
+    "/",
+    responses={
+        200: {"description": "All tasks list"},
+        **IncorrectCredentialsException.responses,
+        **NoCredentialsException.responses,
+    },
+    response_model_exclude_none=True,
+)
+async def get_all(
+    verification: Annotated[VerificationResult, Depends(verify_request)],
+    task_repository: Annotated[AbstractTaskRepository, DEPENDS_TASK_REPOSITORY],
+) -> list[FlatViewTask]:
+    """
+    Get all tasks list
+    """
+    tasks = await task_repository.get_all()
+    return tasks
+
+
+@router.get(
     "/my",
     responses={
         200: {"description": "Tasks list for current user"},

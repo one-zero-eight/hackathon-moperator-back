@@ -19,6 +19,13 @@ class TaskRepository(AbstractTaskRepository):
     def _create_session(self) -> AsyncSession:
         return self.storage.create_session()
 
+    async def get_all(self) -> Optional[list[FlatViewTask]]:
+        async with self._create_session() as session:
+            q = select(Task)
+            tasks = await session.scalars(q)
+            if tasks:
+                return [FlatViewTask.model_validate(task) for task in tasks]
+
     async def get_task(self, task_id: int) -> Optional[FlatViewTask]:
         async with self._create_session() as session:
             q = select(Task).where(Task.id == task_id)
