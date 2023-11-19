@@ -2,6 +2,8 @@ __all__ = ["Agregate", "AgregateSuitableMachines"]
 
 from enum import StrEnum
 
+from sqlalchemy import TEXT
+
 from src.storages.sqlalchemy.utils import *
 from src.storages.sqlalchemy.models.__mixin__ import IdMixin
 from src.storages.sqlalchemy.models.base import Base
@@ -23,7 +25,7 @@ class Agregate(Base, IdMixin):
 
     name: Mapped[str] = mapped_column(nullable=False)
     type: Mapped[str] = mapped_column(nullable=False)
-    description: Mapped[Optional[str]] = mapped_column(nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(TEXT(), default="")
     # noinspection PyTypeChecker
     status: Mapped[AgregateStatus] = mapped_column(
         SQLEnum(AgregateStatus), nullable=False, server_default=AgregateStatus.free.value

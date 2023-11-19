@@ -2,9 +2,11 @@ __all__ = ["models"]
 
 import datetime
 
-from sqladmin import ModelView
-from sqlalchemy.orm import InstrumentedAttribute
+from passlib.context import CryptContext
+from sqladmin import ModelView, action
+from sqlalchemy.orm import InstrumentedAttribute, make_transient
 from starlette.requests import Request
+from starlette.responses import RedirectResponse
 
 from src.api.dependencies import Dependencies
 from src.modules.users.schemas import Notification
@@ -49,8 +51,34 @@ class CustomTaskModelView(ModelView):
         )
 
 
-class UserView(ModelView, model=User):
-    form_excluded_columns = ["email_flows"]
+class CustomUserModelView(ModelView):
+    async def on_model_change(self, data: dict, model: User, is_created: bool, request: Request) -> None:
+        # get password from form
+        password = data.get("password_hash")
+
+        if password is None:
+            return
+
+            # hash password
+        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        hashed_password = pwd_context.hash(password)
+
+        data["password_hash"] = hashed_password
+
+
+class UserView(CustomUserModelView, model=User):
+    form_columns = [
+        "email",
+        "password_hash",
+        "first_name",
+        "last_name",
+        "middle_name",
+        "role",
+        "rfid_id",
+        "photo",
+    ]
+    form_args = {"password_hash": {"label": "Пароль"}}
+
     column_details_exclude_list = ["password_hash", "email_flows"]
     column_exclude_list = ["password_hash", "email_flows"]
 
@@ -93,25 +121,62 @@ class TaskView(CustomTaskModelView, model=Task):
         # "agregate_solvent_consumption",
         "current_machine",
         "current_agregate",
+        "attachments",
     ]
 
-    column_list = ["id", "title", "asignee", "description", "status", "priority", "location", "starting", "deadline", "attachments"]
-    column_details_exclude_list = [
-        "current_machine_id",
-        "current_agregate_id",
+    column_list = [
         "id",
-        "comments",
-        "type_id",
-        "asignee_id",
-        "created_at",
-        "updated_at",
+        "title",
+        "description",
+        "type",
+        "asignee",
+        "status",
+        "priority",
+        "location",
+        "starting",
+        "deadline",
+        "attachments",
     ]
+
+    column_details_exclude_list = []
+
+    @action(
+        name="Copy",
+        label="Copy",
+        add_in_detail=True,
+        add_in_list=True,
+    )
+    async def copy_task(self, request: Request):
+        pks = request.query_params.get("pks", "").split(",")
+        if pks:
+            for pk in pks:
+                model: Task = await self.get_object_for_edit(pk)
+                # create new
+                make_transient(model)
+                model.id = None
+                model.title = f"Копия {model.title}"
+                model.status = "draft"
+                # process attachments
+
+                # save
+                await self.on_model_change({}, model, True, request)
+
+                async with self.session_maker() as session:
+                    session.add(model)
+                    await session.commit()
+
+        referer = request.headers.get("Referer")
+
+        if referer:
+            return RedirectResponse(referer)
+        else:
+            return RedirectResponse(request.url_for("admin:list", identity=self.identity))
 
 
 class TaskTypeView(ModelView, model=TaskType):
     icon = "fa-solid fa-font"
 
-    column_list = ["id", "title", "description"]
+    column_list = ["id", "title", "description", "tasks", "suitable_machines", "suitable_agregates"]
 
 
 class MachineView(ModelView, model=Machine):
@@ -129,7 +194,8 @@ class MachineView(ModelView, model=Machine):
         "suitable_agregates",
         "attachments",
     ]
-    column_list = ["id", "name", "type", "status", "current_location", "tasks", "attachments"]
+    # !!! Description should be 3rd
+    column_list = ["id", "name", "description", "type", "status", "current_location", "tasks", "attachments"]
 
 
 class AgregateView(ModelView, model=Agregate):
@@ -147,7 +213,8 @@ class AgregateView(ModelView, model=Agregate):
         "suitable_machines",
     ]
 
-    column_list = ["id", "name", "type", "status", "current_location", "tasks"]
+    # !!! Description should be 3rd
+    column_list = ["id", "name", "description", "type", "status", "current_location", "tasks"]
 
 
 models = [UserView, TaskView, MachineView, AgregateView, TaskTypeView]

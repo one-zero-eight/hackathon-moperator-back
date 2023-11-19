@@ -13,6 +13,11 @@
     --tblr-navbar-bg: rgb(20, 83, 45);
 }
 
-.btn-secondary {
+.table.card-table.table-vcenter.text-nowrap tr td:nth-child(5) {
+    white-space: pre-wrap;
+    max-width: 380px;
+}
 
+.table.card-table.table-vcenter.text-nowrap.table-hover.table-bordered td {
+    white-space: pre-wrap;
 }

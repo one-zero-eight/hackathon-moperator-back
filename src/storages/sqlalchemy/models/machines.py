@@ -3,11 +3,10 @@ __all__ = ["Machine", "MachineStatus"]
 from enum import StrEnum
 
 from fastapi_storages import FileSystemStorage
-from fastapi_storages.integrations.sqlalchemy import FileType
-from sqlalchemy import Column
+from sqlalchemy import Column, TEXT
 
 from src.storages.sqlalchemy.utils import *
-from src.storages.sqlalchemy.models.__mixin__ import IdMixin
+from src.storages.sqlalchemy.models.__mixin__ import IdMixin, NoneFileType
 from src.storages.sqlalchemy.models.base import Base
 from typing import TYPE_CHECKING, Optional
 
@@ -30,7 +29,7 @@ class Machine(Base, IdMixin):
 
     name: Mapped[str] = mapped_column(nullable=False)
     type: Mapped[str] = mapped_column(nullable=True)
-    description: Mapped[Optional[str]] = mapped_column(nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(TEXT(), default="")
     # noinspection PyTypeChecker
     status: Mapped[MachineStatus] = mapped_column(
         SQLEnum(MachineStatus), nullable=False, server_default=MachineStatus.free.value
@@ -47,7 +46,7 @@ class Machine(Base, IdMixin):
         "Agregate", secondary="agregate_suitable_machines", back_populates="suitable_machines", lazy="selectin"
     )
 
-    attachments = Column(FileType(storage=machines_attachments_storage), nullable=True)
+    attachments = Column(NoneFileType(storage=machines_attachments_storage), nullable=True)
 
     def __repr__(self):
         return f"{self.name} ({self.status})"
