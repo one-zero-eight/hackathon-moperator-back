@@ -31,6 +31,7 @@ class ViewMachine(BaseModel):
     current_task: Optional["FlatViewTask"] = None
 
     suitable_agregates: Optional[list["FlatViewAgregate"]] = None
+    attachments: Optional[str] = None
 
 
 from src.modules.tasks.schemas import FlatViewTask  # noqa: E402

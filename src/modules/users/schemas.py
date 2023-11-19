@@ -24,6 +24,7 @@ class ViewUser(BaseModel):
     first_name: Optional[str] = None
     middle_name: Optional[str] = None
     role: UserRoles
+    photo: Optional[str] = None
 
     @property
     def is_admin(self) -> bool:

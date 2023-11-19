@@ -14,6 +14,7 @@ class FlatViewTaskType(BaseModel):
     id: int
     title: str
     description: Optional[str] = None
+    attachments: Optional[str] = None
 
 
 class FlatViewTask(BaseModel):
@@ -36,6 +37,8 @@ class FlatViewTask(BaseModel):
 
     current_machine: Optional["FlatViewMachine"] = None
     current_agregate: Optional["FlatViewAgregate"] = None
+
+    attachments: Optional[str] = None
 
     # TODO: Something with this
     # work_volume: Optional[float] = None
