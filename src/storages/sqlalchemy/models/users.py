@@ -2,9 +2,16 @@ __all__ = ["User", "EmailFlow", "UserRoles"]
 
 from typing import Optional
 
+from fastapi_storages import FileSystemStorage
+from fastapi_storages.integrations.sqlalchemy import ImageType
+from sqlalchemy import Column
+
 from src.storages.sqlalchemy.utils import *
 from src.storages.sqlalchemy.models.__mixin__ import IdMixin
 from src.storages.sqlalchemy.models.base import Base
+
+
+photo_storage = FileSystemStorage(path="/tmp")
 
 
 class UserRoles(Base, IdMixin):
@@ -26,6 +33,8 @@ class User(Base):
     first_name: Mapped[Optional[str]] = mapped_column(nullable=True)
     middle_name: Mapped[Optional[str]] = mapped_column(nullable=True)
     role: Mapped[str] = mapped_column()
+
+    photo = Column(ImageType(storage=photo_storage), nullable=True)
 
     def __repr__(self):
         return f"User({self.email}: {self.last_name} {self.first_name} {self.middle_name})"

@@ -95,7 +95,7 @@ class TaskView(CustomTaskModelView, model=Task):
         "current_agregate",
     ]
 
-    column_list = ["id", "title", "asignee", "description", "status", "priority", "location", "starting", "deadline"]
+    column_list = ["id", "title", "asignee", "description", "status", "priority", "location", "starting", "deadline", "attachments"]
     column_details_exclude_list = [
         "current_machine_id",
         "current_agregate_id",
@@ -127,8 +127,9 @@ class MachineView(ModelView, model=Machine):
         "current_location",
         "suitable_task_types",
         "suitable_agregates",
+        "attachments",
     ]
-    column_list = ["id", "name", "type", "status", "current_location", "tasks"]
+    column_list = ["id", "name", "type", "status", "current_location", "tasks", "attachments"]
 
 
 class AgregateView(ModelView, model=Agregate):
