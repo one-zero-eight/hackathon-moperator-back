@@ -46,11 +46,6 @@ if settings.CORS_ALLOW_ORIGINS:
         allow_headers=["*"],
     )
 
-if settings.SMTP_ENABLED:
-    warnings.warn("SMTP and email connection is enabled!")
-else:
-    warnings.warn("SMTP and email connection is disabled!")
-
 
 @app.on_event("startup")
 async def startup_event():

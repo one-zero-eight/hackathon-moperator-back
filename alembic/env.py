@@ -23,7 +23,6 @@ from src.storages.sqlalchemy.models import Base  # noqa: E402
 
 target_metadata = Base.metadata
 
-
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
@@ -57,21 +56,31 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
-def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
+def run_migrations_online():
+    # https://stackoverflow.com/a/71212675/19566814
+    # almost identical to Flask-Migrate (Thanks miguel!)
+    # this callback is used to prevent an auto-migration from being generated
+    # when there are no changes to the schema
 
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
+    def process_revision_directives(context, revision, directives):
+        if config.cmd_opts.autogenerate:
+            script = directives[0]
+            if script.upgrade_ops.is_empty():
+                directives[:] = []
+                print("No changes in schema detected.")
 
-    """
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        config.get_section(config.config_ini_section),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            process_revision_directives=process_revision_directives,
+        )
 
         with context.begin_transaction():
             context.run_migrations()

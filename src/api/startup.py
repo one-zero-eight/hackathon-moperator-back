@@ -1,16 +1,15 @@
 from fastapi import FastAPI
 
 from src.config import settings
+from src.modules.agregates.repository import AgregateRepository
 from src.modules.auth.repository import AuthRepository
 from src.modules.machines.repository import MachineRepository
 from src.modules.tasks.repository import TaskRepository
-from src.modules.agregates.repository import AgregateRepository
 
 
 async def setup_repositories():
     from src.modules.users.repository import UserRepository
-    from src.modules.smtp.repository import SMTPRepository
-    from src.storages.sqlalchemy import SQLAlchemyStorage
+    from src.storages.sqlalchemy.storage import SQLAlchemyStorage
     from src.api.dependencies import Dependencies
 
     # ------------------- Repositories Dependencies -------------------
@@ -27,10 +26,6 @@ async def setup_repositories():
     Dependencies.set_task_repository(task_repository)
     Dependencies.set_machine_repository(machine_repository)
     Dependencies.set_agregate_repository(agregate_repository)
-
-    if settings.SMTP_ENABLED:
-        smtp_repository = SMTPRepository()
-        Dependencies.set_smtp_repository(smtp_repository)
 
     # await storage.create_all()
 

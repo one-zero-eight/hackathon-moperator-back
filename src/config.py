@@ -3,7 +3,6 @@ __all__ = ["Environment", "settings", "Settings"]
 import os
 from enum import StrEnum
 from pathlib import Path
-from typing import Optional
 
 import yaml
 from pydantic import SecretStr, model_validator, BaseModel, Field, ConfigDict
@@ -13,17 +12,6 @@ class Environment(StrEnum):
     DEVELOPMENT = "development"
     PRODUCTION = "production"
     TESTING = "testing"
-
-
-class Smtp(BaseModel):
-    SERVER: str = "mail.innopolis.ru"
-    PORT: int = 587
-    USERNAME: str
-    PASSWORD: SecretStr
-
-    @model_validator(mode="before")
-    def all_keys_to_upper(cls, values):
-        return {key.upper(): value for key, value in values.items()}
 
 
 class Cookies(BaseModel):
@@ -62,10 +50,6 @@ class Settings(BaseModel):
     # JWT settings
     JWT_PRIVATE_KEY: str
     JWT_PUBLIC_KEY: str
-
-    # SMTP server settings
-    SMTP_ENABLED: bool = False
-    SMTP: Optional[Smtp] = None
 
     def flatten(self):
         """

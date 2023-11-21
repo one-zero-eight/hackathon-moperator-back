@@ -7,6 +7,7 @@ __all__ = [
     "UserNotFound",
     "EmailFlowNotFound",
     "UserAlreadyHasEmail",
+    "ObjectNotFound",
 ]
 
 from typing import Optional

@@ -8,7 +8,7 @@ from src.api.dependencies import DEPENDS_AGREGATE_REPOSITORY
 from src.api.exceptions import IncorrectCredentialsException, NoCredentialsException
 from src.modules.auth.dependencies import verify_request
 from src.modules.auth.schemas import VerificationResult
-from src.modules.agregates.abc import AbstractAgregateRepository
+from src.modules.agregates.repository import AgregateRepository
 from src.modules.agregates.schemas import ViewAgregate
 
 router = APIRouter(prefix="/agregates", tags=["Agregates"])
@@ -25,7 +25,7 @@ router = APIRouter(prefix="/agregates", tags=["Agregates"])
 )
 async def get_all(
     verification: Annotated[VerificationResult, Depends(verify_request)],
-    agregate_repository: Annotated[AbstractAgregateRepository, DEPENDS_AGREGATE_REPOSITORY],
+    agregate_repository: Annotated[AgregateRepository, DEPENDS_AGREGATE_REPOSITORY],
 ) -> list[ViewAgregate]:
     """
     Get agregates list
@@ -45,7 +45,7 @@ async def get_all(
 async def get_agregate(
     agregate_id: int,
     verification: Annotated[VerificationResult, Depends(verify_request)],
-    agregate_repository: Annotated[AbstractAgregateRepository, DEPENDS_AGREGATE_REPOSITORY],
+    agregate_repository: Annotated[AgregateRepository, DEPENDS_AGREGATE_REPOSITORY],
 ) -> ViewAgregate:
     """
     Get machine info

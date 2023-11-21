@@ -6,19 +6,17 @@ from typing import Optional
 from authlib.jose import jwt, JoseError
 from passlib.context import CryptContext
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.dependencies import Dependencies
 from src.api.exceptions import IncorrectCredentialsException
 from src.config import settings
-from src.modules.auth.abc import AbstractTokenRepository, AbstractAuthRepository
 from src.modules.auth.schemas import VerificationResult
 from src.modules.users.schemas import UserCredentials
-from src.storages.sqlalchemy import AbstractSQLAlchemyStorage
 from src.storages.sqlalchemy.models import User
+from src.storages.sqlalchemy.repository import SQLAlchemyRepository
 
 
-class TokenRepository(AbstractTokenRepository):
+class TokenRepository:
     ALGORITHM = "RS256"
 
     @classmethod
@@ -59,14 +57,8 @@ class TokenRepository(AbstractTokenRepository):
         return str(encoded_jwt, "utf-8")
 
 
-class AuthRepository(AbstractAuthRepository):
+class AuthRepository(SQLAlchemyRepository):
     PWD_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-    def __init__(self, storage: AbstractSQLAlchemyStorage):
-        self.storage = storage
-
-    def _create_session(self) -> AsyncSession:
-        return self.storage.create_session()
 
     def get_password_hash(self, password: str) -> str:
         return self.PWD_CONTEXT.hash(password)

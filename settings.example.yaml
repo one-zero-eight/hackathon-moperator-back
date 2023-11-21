@@ -18,11 +18,3 @@ JWT_PUBLIC_KEY: |
     ssssssssssssssssssssssssssssss
     sssssssssss
     -----END PUBLIC KEY-----
-
-# ---------- SMTP settings ----- #
-smtp_enabled: false
-smtp:
-    host: smtp.gmail.com
-    port: 587
-    username: a.a@gmail.com
-    password: my_super_password

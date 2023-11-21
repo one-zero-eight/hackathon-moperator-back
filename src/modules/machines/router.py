@@ -8,7 +8,7 @@ from src.api.dependencies import DEPENDS_MACHINE_REPOSITORY
 from src.api.exceptions import IncorrectCredentialsException, NoCredentialsException
 from src.modules.auth.dependencies import verify_request
 from src.modules.auth.schemas import VerificationResult
-from src.modules.machines.abc import AbstractMachineRepository
+from src.modules.machines.repository import MachineRepository
 from src.modules.machines.schemas import ViewMachine
 
 router = APIRouter(prefix="/machines", tags=["Machines"])
@@ -25,7 +25,7 @@ router = APIRouter(prefix="/machines", tags=["Machines"])
 )
 async def get_all(
     verification: Annotated[VerificationResult, Depends(verify_request)],
-    machine_repository: Annotated[AbstractMachineRepository, DEPENDS_MACHINE_REPOSITORY],
+    machine_repository: Annotated[MachineRepository, DEPENDS_MACHINE_REPOSITORY],
 ) -> list[ViewMachine]:
     """
     Get machines list
@@ -45,7 +45,7 @@ async def get_all(
 async def get_machine(
     machine_id: int,
     verification: Annotated[VerificationResult, Depends(verify_request)],
-    machine_repository: Annotated[AbstractMachineRepository, DEPENDS_MACHINE_REPOSITORY],
+    machine_repository: Annotated[MachineRepository, DEPENDS_MACHINE_REPOSITORY],
 ) -> ViewMachine:
     """
     Get machine info

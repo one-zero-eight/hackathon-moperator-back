@@ -8,10 +8,9 @@ from email_validator import validate_email, EmailNotValidError
 from jinja2 import Template
 
 from src.config import settings
-from src.modules.smtp.abc import AbstractSMTPRepository
 
 
-class SMTPRepository(AbstractSMTPRepository):
+class SMTPRepository:
     def __init__(self):
         self._server = smtplib.SMTP(settings.SMTP.SERVER, settings.SMTP.PORT)
 

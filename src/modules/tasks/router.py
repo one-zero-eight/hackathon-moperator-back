@@ -9,7 +9,7 @@ from src.api.dependencies import DEPENDS_TASK_REPOSITORY
 from src.api.exceptions import IncorrectCredentialsException, NoCredentialsException
 from src.modules.auth.dependencies import verify_request
 from src.modules.auth.schemas import VerificationResult
-from src.modules.tasks.abc import AbstractTaskRepository
+from src.modules.tasks.repository import TaskRepository
 from src.modules.tasks.schemas import ChangeTaskStatus, FlatViewTask
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
@@ -26,7 +26,7 @@ router = APIRouter(prefix="/tasks", tags=["Tasks"])
 )
 async def get_all(
     verification: Annotated[VerificationResult, Depends(verify_request)],
-    task_repository: Annotated[AbstractTaskRepository, DEPENDS_TASK_REPOSITORY],
+    task_repository: Annotated[TaskRepository, DEPENDS_TASK_REPOSITORY],
 ) -> list[FlatViewTask]:
     """
     Get all tasks list
@@ -46,7 +46,7 @@ async def get_all(
 )
 async def get_my_tasks(
     verification: Annotated[VerificationResult, Depends(verify_request)],
-    task_repository: Annotated[AbstractTaskRepository, DEPENDS_TASK_REPOSITORY],
+    task_repository: Annotated[TaskRepository, DEPENDS_TASK_REPOSITORY],
 ) -> list[FlatViewTask]:
     """
     Get tasks list for current user
@@ -66,7 +66,7 @@ async def get_my_tasks(
 async def get_task(
     task_id: int,
     verification: Annotated[VerificationResult, Depends(verify_request)],
-    task_repository: Annotated[AbstractTaskRepository, DEPENDS_TASK_REPOSITORY],
+    task_repository: Annotated[TaskRepository, DEPENDS_TASK_REPOSITORY],
 ) -> FlatViewTask:
     """
     Get task info
@@ -88,7 +88,7 @@ async def change_task_status(
     task_id: int,
     status: ChangeTaskStatus,
     verification: Annotated[VerificationResult, Depends(verify_request)],
-    task_repository: Annotated[AbstractTaskRepository, DEPENDS_TASK_REPOSITORY],
+    task_repository: Annotated[TaskRepository, DEPENDS_TASK_REPOSITORY],
 ) -> FlatViewTask:
     """
     Change task status

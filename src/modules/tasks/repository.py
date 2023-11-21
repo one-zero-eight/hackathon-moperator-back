@@ -1,24 +1,16 @@
 __all__ = ["TaskRepository"]
 
-from sqlalchemy import select, update
 from typing import Optional
 
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, update
 
 from src.api.exceptions import ObjectNotFound
-from src.modules.tasks.abc import AbstractTaskRepository
 from src.modules.tasks.schemas import FlatViewTask
-from src.storages.sqlalchemy import AbstractSQLAlchemyStorage
 from src.storages.sqlalchemy.models import Task
+from src.storages.sqlalchemy.repository import SQLAlchemyRepository
 
 
-class TaskRepository(AbstractTaskRepository):
-    def __init__(self, storage: AbstractSQLAlchemyStorage):
-        self.storage = storage
-
-    def _create_session(self) -> AsyncSession:
-        return self.storage.create_session()
-
+class TaskRepository(SQLAlchemyRepository):
     async def get_all(self) -> Optional[list[FlatViewTask]]:
         async with self._create_session() as session:
             q = select(Task)

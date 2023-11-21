@@ -1,24 +1,16 @@
 __all__ = ["AgregateRepository"]
 
-from sqlalchemy import select
 from typing import Optional
 
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from src.api.exceptions import ObjectNotFound
-from src.modules.agregates.abc import AbstractAgregateRepository
 from src.modules.agregates.schemas import ViewAgregate
-from src.storages.sqlalchemy import AbstractSQLAlchemyStorage
 from src.storages.sqlalchemy.models import Agregate
+from src.storages.sqlalchemy.repository import SQLAlchemyRepository
 
 
-class AgregateRepository(AbstractAgregateRepository):
-    def __init__(self, storage: AbstractSQLAlchemyStorage):
-        self.storage = storage
-
-    def _create_session(self) -> AsyncSession:
-        return self.storage.create_session()
-
+class AgregateRepository(SQLAlchemyRepository):
     async def get_agregate(self, agregate_id: int) -> Optional[ViewAgregate]:
         async with self._create_session() as session:
             q = select(Agregate).where(Agregate.id == agregate_id)
